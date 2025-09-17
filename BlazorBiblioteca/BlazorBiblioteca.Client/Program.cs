@@ -7,4 +7,6 @@ builder.Services.AddScoped(sp =>
         BaseAddress = new Uri(builder.Configuration["FrontendUrl"] ?? "https://localhost:7150")
     });
 
+builder.Services.AddBlazorBootstrap();
+
 await builder.Build().RunAsync();

@@ -11,6 +11,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 
+builder.Services.AddBlazorBootstrap();
+
 builder.Services.AddDbContext<LibroDBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BibliotecaDB")));
 
