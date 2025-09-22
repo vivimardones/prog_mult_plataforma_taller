@@ -6,6 +6,10 @@
 		<Nullable>enable</Nullable>
 		<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
 		<StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+		
+		<!--Service worker-->
+		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+		
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,6 +19,11 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\BlazorBiblioteca.Shared\BlazorBiblioteca.Shared.csproj" />
+	</ItemGroup>
+	
+	<!--Service Worker-->
+	<ItemGroup>
+		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
 	</ItemGroup>
 
 </Project>

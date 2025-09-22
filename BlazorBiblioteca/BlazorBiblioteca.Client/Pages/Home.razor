@@ -2,7 +2,7 @@
 @using BlazorBiblioteca.Shared
 @inject HttpClient Http
 
-<PageTitle>Libros</PageTitle>
+<PageTitle>Biblioteca</PageTitle>
 <style>
     .column {
         width: min(60%, 120rem);
@@ -20,9 +20,9 @@
 </style>
 
 
+<h1 class="text-center mb-4">LIBROS EN BIBLIOTECA</h1>
 <div class="bg-degrade">
 
-    <h1 class="text-center mb-4">LIBROS EN BIBLIOTECA</h1>
     <div class="mb-3">
         <p>@conexionServidor</p>
         <p>@conexionLibros</p>
@@ -56,7 +56,7 @@
             <div class="mb-3">
                 <label class="col-md-2 col-form-label" for="fecha">Fecha de publicación:</label>
                 <div class="mb-3">
-                    <DateInput TValue="DateOnly" id="fecha" @bind-Value=libro!.FechaPublicacion Placeholder="Ingrese una Fecha" />
+                    <DateInput TValue="DateOnly" id="fecha" @bind-Value=libro!.FechaPublicacion />
                 </div>
             </div>
 
@@ -77,7 +77,7 @@
         }
         else
         {
-            <p><strong>LISTADO DE LIBROS</strong></p>
+            <h3>LISTADO DE LIBROS</h3>
             <table class="table table-striped" id="tabla" name="tabla" cellpadding="3" style="font: 10pt">
                 <thead>
                     <tr>
@@ -123,8 +123,8 @@
     string url = "https://localhost:7150/";
     string conexionServidor = "Conectando..";
     string conexionLibros = "Conectando..";
-
     string message = string.Empty;
+
     AlertColor alertColor = AlertColor.Primary;
     IconName alertIconName = IconName.InfoCircleFill;
 
@@ -172,13 +172,14 @@
         try
         {
             var data = await Http.GetFromJsonAsync<List<Libro>>(url + "api/Libro/LibrosListar");
-            libros = data;
+            libros = data ?? new List<Libro>(); ;
         }
         catch (Exception ex)
         {
             alertColor = AlertColor.Info;
             alertIconName = IconName.InfoCircleFill;
             message = "No existen libros en la biblioteca actualmente";
+            libros = new List<Libro>();
         }
     }
 
