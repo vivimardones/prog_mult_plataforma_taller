@@ -1,27 +1,12 @@
-# Ignorar carpetas de compilación
 **/bin/
 **/obj/
-
-# Ignorar archivos generados
 *.dll
-*.exe
 *.pdb
-*.cache
-*.log
 *.user
 *.suo
 *.nuget.g.props
 *.nuget.g.targets
 *.editorconfig
-
-# Ignorar configuraciones locales
 .vscode/
-*.csproj.user
-
-# Ignorar archivos de publicación
-publish/
-wwwroot/dist/
-
 BlazorBiblioteca/.vs/
-
 BlazorBiblioteca/BlazorBiblioteca/appsettings.json

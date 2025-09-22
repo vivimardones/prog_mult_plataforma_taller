@@ -3,7 +3,24 @@
 @inject HttpClient Http
 
 <PageTitle>Libros</PageTitle>
-<div class="container mt-4">
+<style>
+    .column {
+        width: min(60%, 120rem);
+        margin: 0 auto;
+    }
+
+    .tabla {
+        margin: auto;
+    }
+
+    .bg-degrade {
+        background: rgb(48,255,210);
+        background: linear-gradient(0deg,rgba(48,255,210,1) 0%, rgba(220, 255, 250, 0.67) 100%);
+    }
+</style>
+
+
+<div class="bg-degrade">
 
     <h1 class="text-center mb-4">LIBROS EN BIBLIOTECA</h1>
     <div class="mb-3">
@@ -11,49 +28,49 @@
         <p>@conexionLibros</p>
     </div>
 
-    <h2>FORMULARIO</h2>
-    <EditForm Model="@libro" OnValidSubmit="ShowLoadingDataAsync" FormName="createOrUpdate">
-        <DataAnnotationsValidator />
-        <div class="mb-3">
-            <label class="col-md-2 col-form-label" for="nombre">Nombre del libro:</label>
-            <div class="mb-3">
-                <InputText class="form-control" id="nombre" @bind-Value=libro!.NombreLibro></InputText>
-                <ValidationMessage For="@(() => libro.NombreLibro)" />
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="col-md-2 col-form-label" for="autor">Autor:</label>
-            <div class="mb-3">
-                <InputText class="form-control" id="autor" @bind-Value=libro!.Autor></InputText>
-                <ValidationMessage For="@(() => libro.Autor)" />
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="col-md-2 col-form-label" for="paginas">Número de páginas:</label>
-            <div class="mb-3">
-                <NumberInput TValue="int" id="paginas" @bind-Value=libro.NumPaginas AllowNegativeNumbers=false></NumberInput>
-                <ValidationMessage For="@(() => libro.NumPaginas)" />
-            </div>
-        </div>
-        <div class="mb-3">
-            <label class="col-md-2 col-form-label" for="fecha">Fecha de publicación:</label>
-            <div class="mb-3">
-                <DateInput TValue="DateOnly" id="fecha" @bind-Value=libro!.FechaPublicacion Placeholder="Ingrese una Fecha" />
-            </div>
-        </div>
-
-        <Button Color="ButtonColor.Success" Size="ButtonSize.Large" type="ButtonType.Submit">Guardar libro</Button>
-        <Preload LoadingText="Cargando..." />
-    </EditForm>
-    @if (!string.IsNullOrEmpty(message))
-    {
-        <Alert Color="@alertColor" Dismissable="false">
-            <Icon Name="@alertIconName" />
-            @message
-        </Alert>
-    }
-
     <div class="column">
+        <h2>FORMULARIO</h2>
+        <EditForm Model="@libro" OnValidSubmit="ShowLoadingDataAsync" FormName="createOrUpdate">
+            <DataAnnotationsValidator />
+            <div class="mb-3">
+                <label class="col-md-2 col-form-label" for="nombre">Nombre del libro:</label>
+                <div class="mb-3">
+                    <InputText class="form-control" id="nombre" @bind-Value=libro!.NombreLibro></InputText>
+                    <ValidationMessage For="@(() => libro.NombreLibro)" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="col-md-2 col-form-label" for="autor">Autor:</label>
+                <div class="mb-3">
+                    <InputText class="form-control" id="autor" @bind-Value=libro!.Autor></InputText>
+                    <ValidationMessage For="@(() => libro.Autor)" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="col-md-2 col-form-label" for="paginas">Número de páginas:</label>
+                <div class="mb-3">
+                    <NumberInput TValue="int" id="paginas" @bind-Value=libro.NumPaginas AllowNegativeNumbers=false></NumberInput>
+                    <ValidationMessage For="@(() => libro.NumPaginas)" />
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="col-md-2 col-form-label" for="fecha">Fecha de publicación:</label>
+                <div class="mb-3">
+                    <DateInput TValue="DateOnly" id="fecha" @bind-Value=libro!.FechaPublicacion Placeholder="Ingrese una Fecha" />
+                </div>
+            </div>
+
+            <Button Color="ButtonColor.Success" Size="ButtonSize.Large" type="ButtonType.Submit">Guardar libro</Button>
+            <Preload LoadingText="Cargando..." />
+        </EditForm>
+        @if (!string.IsNullOrEmpty(message))
+        {
+            <Alert Color="@alertColor" Dismissable="false">
+                <Icon Name="@alertIconName" />
+                @message
+            </Alert>
+        }
+
         @if (libros.Count == 0)
         {
             <h3>@message</h3>
@@ -61,7 +78,7 @@
         else
         {
             <p><strong>LISTADO DE LIBROS</strong></p>
-            <table border="1">
+            <table class="table table-striped" id="tabla" name="tabla" cellpadding="3" style="font: 10pt">
                 <thead>
                     <tr>
                         <th>Id</th>
