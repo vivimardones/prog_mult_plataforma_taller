@@ -14,14 +14,14 @@
     }
 
     .bg-degrade {
-        background: rgb(48,255,210);
-        background: linear-gradient(0deg,rgba(48,255,210,1) 0%, rgba(220, 255, 250, 0.67) 100%);
+        background: rgb(48, 255, 210);
+        background: linear-gradient(0deg, rgba(48, 255, 210, 1) 0%, rgba(220, 255, 250, 0.67) 100%);
     }
 </style>
 
 
-<h1 class="text-center mb-4">LIBROS EN BIBLIOTECA</h1>
 <div class="bg-degrade">
+    <h1 class="text-center mb-3">LIBROS EN BIBLIOTECA</h1>
 
     <div class="mb-3">
         <p>@conexionServidor</p>
@@ -49,7 +49,8 @@
             <div class="mb-3">
                 <label class="col-md-2 col-form-label" for="paginas">Número de páginas:</label>
                 <div class="mb-3">
-                    <NumberInput TValue="int" id="paginas" @bind-Value=libro.NumPaginas AllowNegativeNumbers=false></NumberInput>
+                    <NumberInput TValue="int" id="paginas" @bind-Value=libro.NumPaginas AllowNegativeNumbers=false>
+                    </NumberInput>
                     <ValidationMessage For="@(() => libro.NumPaginas)" />
                 </div>
             </div>
@@ -98,16 +99,16 @@
                             <td>@libro.NombreLibro</td>
                             <td>@libro.Autor</td>
                             <td>@libro.NumPaginas</td>
-                            <td>@libro.FechaPublicacion.ToShortDateString()</td>
+                            <td>@libro.FechaPublicacion.ToString("dd/MM/yyyy")</td>
                             <td>
                                 <Button Color="ButtonColor.Warning" Size="ButtonSize.Medium"
-                                        @onclick="() => this.libro = libro">
+                                    @onclick="() => this.libro = libro">
                                     Actualizar
                                 </Button>
                             </td>
                             <td>
                                 <Button Color="ButtonColor.Danger" Outline="true" Size="ButtonSize.Medium"
-                                        @onclick="() => DeleteLibroConPreload(libro.Id)">
+                                    @onclick="() => DeleteLibroConPreload(libro.Id)">
                                     Eliminar
                                 </Button>
                             </td>
@@ -118,7 +119,7 @@
         }
     </div>
 </div>
-
+|
 @code {
     string url = "https://localhost:7150/";
     string conexionServidor = "Conectando..";
