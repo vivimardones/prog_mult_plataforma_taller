@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\BlazorBiblioteca.Client\Pages\Component.razor" Link="Component.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BlazorBiblioteca.Client\BlazorBiblioteca.Client.csproj" />
     <PackageReference Include="Blazor.Bootstrap" Version="3.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.19" />

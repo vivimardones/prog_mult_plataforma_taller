@@ -3,39 +3,54 @@
 @inject HttpClient Http
 
 <PageTitle>Libros</PageTitle>
+<div class="container mt-4">
 
-<h1>LIBROS EN BIBLIOTECA</h1>
-<br />
+    <h1 class="text-center mb-4">LIBROS EN BIBLIOTECA</h1>
+    <div class="mb-3">
+        <p>@conexionServidor</p>
+        <p>@conexionLibros</p>
+    </div>
 
-<p>@conexionServidor</p>
-<p>@conexionLibros</p>
-
-<h2>FORMULARIO</h2>
-<div>
-    <EditForm Model="@libro" OnValidSubmit="CreateOrUpdateLibro" FormName="createOrUpdate">
+    <h2>FORMULARIO</h2>
+    <EditForm Model="@libro" OnValidSubmit="ShowLoadingDataAsync" FormName="createOrUpdate">
         <DataAnnotationsValidator />
+        <div class="mb-3">
+            <label class="col-md-2 col-form-label" for="nombre">Nombre del libro:</label>
+            <div class="mb-3">
+                <InputText class="form-control" id="nombre" @bind-Value=libro!.NombreLibro></InputText>
+                <ValidationMessage For="@(() => libro.NombreLibro)" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="col-md-2 col-form-label" for="autor">Autor:</label>
+            <div class="mb-3">
+                <InputText class="form-control" id="autor" @bind-Value=libro!.Autor></InputText>
+                <ValidationMessage For="@(() => libro.Autor)" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="col-md-2 col-form-label" for="paginas">Número de páginas:</label>
+            <div class="mb-3">
+                <NumberInput TValue="int" id="paginas" @bind-Value=libro.NumPaginas AllowNegativeNumbers=false></NumberInput>
+                <ValidationMessage For="@(() => libro.NumPaginas)" />
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="col-md-2 col-form-label" for="fecha">Fecha de publicación:</label>
+            <div class="mb-3">
+                <DateInput TValue="DateOnly" id="fecha" @bind-Value=libro!.FechaPublicacion Placeholder="Ingrese una Fecha" />
+            </div>
+        </div>
 
-        <label for="nombre">Nombre del libro:</label>
-        <InputText id="nombre" @bind-Value=libro!.NombreLibro></InputText>
-        <ValidationMessage For="@(() => libro.NombreLibro)" />
-
-        <label for="autor">Autor:</label>
-        <InputText id="autor" @bind-Value=libro!.Autor></InputText>
-        <ValidationMessage For="@(() => libro.Autor)" />
-
-        <label for="paginas">Número de páginas:</label>
-        <InputNumber id="paginas" TValue="int" @bind-Value=libro.NumPaginas></InputNumber>
-        <ValidationMessage For="@(() => libro.NumPaginas)" />
-
-        <label for="fecha">Fecha de publicación:</label>
-        <InputDate id="fecha" @bind-Value=libro!.FechaPublicacion></InputDate>
-
-        <button type="submit">Guardar libro</button>
+        <Button Color="ButtonColor.Success" Size="ButtonSize.Large" type="ButtonType.Submit">Guardar libro</Button>
+        <Preload LoadingText="Cargando..." />
     </EditForm>
-
     @if (!string.IsNullOrEmpty(message))
     {
-        <p><strong>@message</strong></p>
+        <Alert Color="@alertColor" Dismissable="false">
+            <Icon Name="@alertIconName" />
+            @message
+        </Alert>
     }
 
     <div class="column">
@@ -67,8 +82,18 @@
                             <td>@libro.Autor</td>
                             <td>@libro.NumPaginas</td>
                             <td>@libro.FechaPublicacion.ToShortDateString()</td>
-                            <td><button @onclick="() => this.libro = libro">Actualizar</button></td>
-                            <td><button @onclick="() => DeleteLibro(libro.Id)">Eliminar</button></td>
+                            <td>
+                                <Button Color="ButtonColor.Warning" Size="ButtonSize.Medium"
+                                        @onclick="() => this.libro = libro">
+                                    Actualizar
+                                </Button>
+                            </td>
+                            <td>
+                                <Button Color="ButtonColor.Danger" Outline="true" Size="ButtonSize.Medium"
+                                        @onclick="() => DeleteLibroConPreload(libro.Id)">
+                                    Eliminar
+                                </Button>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -83,10 +108,35 @@
     string conexionLibros = "Conectando..";
 
     string message = string.Empty;
+    AlertColor alertColor = AlertColor.Primary;
+    IconName alertIconName = IconName.InfoCircleFill;
+
     List<Libro> libros = new List<Libro>();
 
     [SupplyParameterFromForm(FormName = "createOrUpdate")]
     Libro libro { get; set; } = new();
+
+    [Inject] protected PreloadService preloadService { get; set; } = default!;
+    private async Task ShowLoadingDataAsync()
+    {
+        preloadService.Show(SpinnerColor.Light, "Cargando...");
+
+        await Task.Delay(3000);
+        await CreateOrUpdateLibro();
+
+        preloadService.Hide();
+    }
+
+    private async Task DeleteLibroConPreload(int id)
+    {
+        preloadService.Show(SpinnerColor.Light, "Eliminando libro...");
+
+        await Task.Delay(2000);
+        await DeleteLibro(id);
+
+        preloadService.Hide();
+    }
+
 
     async Task ProbarConexion()
     {
@@ -109,6 +159,8 @@
         }
         catch (Exception ex)
         {
+            alertColor = AlertColor.Info;
+            alertIconName = IconName.InfoCircleFill;
             message = "No existen libros en la biblioteca actualmente";
         }
     }
@@ -119,6 +171,7 @@
             await CreateLibro();
         else
             await UpdateLibro();
+
     }
 
     async Task CreateLibro()
@@ -127,11 +180,15 @@
 
         if (res.IsSuccessStatusCode)
         {
+            alertColor = AlertColor.Success;
+            alertIconName = IconName.CheckCircleFill;
             message = "Se ha ingresado un nuevo libro en la Biblioteca";
             libro = new();
         }
         else
         {
+            alertColor = AlertColor.Info;
+            alertIconName = IconName.InfoCircleFill;
             message = "Error al ingresar nuevo Libro";
         }
 
@@ -143,9 +200,19 @@
         var res = await Http.PutAsJsonAsync(url + "api/Libro/libro/" + libro.Id, libro);
 
         if (res.IsSuccessStatusCode)
+        {
+
+            alertColor = AlertColor.Warning;
+            alertIconName = IconName.ExclamationCircleFill;
             message = $"Se ha actualizado el libro '{libro.NombreLibro}'";
+        }
         else
+        {
+
+            alertColor = AlertColor.Info;
+            alertIconName = IconName.InfoCircleFill;
             message = $"Error al actualizar Libro {libro.NombreLibro}";
+        }
 
         libro = new();
         await GetLibros();
@@ -157,11 +224,15 @@
 
         if (res.IsSuccessStatusCode)
         {
+            alertColor = AlertColor.Danger;
+            alertIconName = IconName.ExclamationCircleFill;
             message = "Libro eliminado correctamente";
             await GetLibros();
         }
         else
         {
+            alertColor = AlertColor.Info;
+            alertIconName = IconName.InfoCircleFill;
             message = "Error al eliminar libro";
         }
     }

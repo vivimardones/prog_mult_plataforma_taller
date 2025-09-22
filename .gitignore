@@ -21,3 +21,7 @@
 # Ignorar archivos de publicación
 publish/
 wwwroot/dist/
+
+BlazorBiblioteca/.vs/
+
+BlazorBiblioteca/BlazorBiblioteca/appsettings.json
